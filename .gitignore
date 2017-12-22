@@ -1,0 +1,43 @@
+# Project generated files #
+
+metastore_db
+third_party_sources
+derby.log
+
+# Operating System Files #
+
+*.DS_Store
+Thumbs.db
+
+# Build Files #
+
+bin
+target
+build/
+.gradle
+
+# Eclipse Project Files #
+
+.classpath
+.project
+.settings
+
+# Node and Webpack
+node_modules/
+npm-debug.log
+index.html
+pgw.communitymapping*.js
+pgw.communitymapping*.js.map
+vendor.bundle.js
+dist/
+
+# IntelliJ IDEA Files #
+
+*.iml
+*.ipr
+*.iws
+*.idea
+
+# macOS
+.DS_Store
+
