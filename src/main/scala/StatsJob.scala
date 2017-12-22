@@ -16,6 +16,8 @@ object StatsJob {
         println("failure")
       }
       case Success((ns,ws,rs)) => {
+        println("Calculating road stats for Maryland")
+
         val roadsOnly: RDD[(Long, osm.Way)] =
           ws.filter(_._2.meta.tags.contains("highway"))
 
@@ -45,14 +47,13 @@ object StatsJob {
         println(s"Roads modified: $roadsModifiedCount")
 
         /** Calculating what changes occurred before/after timestamp*/
-        /*
-        def tagChanges(e1: osm.Way, e2: osm.Way): Map[String, Long] =
-          (e1.meta.tags.toSet diff e2.meta.tags.toSet)
+        val hasSurfaceBefore = latestRoadBeforeUpdate.filter(_._2.meta.tags.contains("surface")).count()
+        val hasSurfaceAfter = latestRoadAfterUpdate.filter(_._2.meta.tags.contains("surface")).count()
+        println(s"Has surface counts: before: $hasSurfaceBefore, after: $hasSurfaceAfter")
 
-        latestRoadAfterUpdate.union(latestRoadBeforeUpdate)
-
-        println(s"Road counts: before: $roadCount1, after: $roadCount2")
-        */
+        val hasOneWayBefore = latestRoadBeforeUpdate.filter(_._2.meta.tags.contains("oneway")).count()
+        val hasOneWayAfter = latestRoadAfterUpdate.filter(_._2.meta.tags.contains("oneway")).count()
+        println(s"Has oneway counts: before: $hasOneWayBefore, after: $hasOneWayAfter")
       }
     }
     ss.stop()
