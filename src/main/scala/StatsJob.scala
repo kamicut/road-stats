@@ -1,8 +1,15 @@
 import org.apache.spark.sql._
 import scala.util.{Success, Failure}
-import org.apache.spark.rdd.RDD
 import java.time.Instant
+import org.apache.spark.rdd.RDD
 import vectorpipe._
+
+/*
+import geotrellis.proj4.WebMercator
+import geotrellis.spark._
+import geotrellis.spark.tiling._
+import geotrellis.vectortile.VectorTile
+*/
 
 object StatsJob {
   def main(args: Array[String]) {
@@ -54,6 +61,32 @@ object StatsJob {
         val hasOneWayBefore = latestRoadBeforeUpdate.filter(_._2.meta.tags.contains("oneway")).count()
         val hasOneWayAfter = latestRoadAfterUpdate.filter(_._2.meta.tags.contains("oneway")).count()
         println(s"Has oneway counts: before: $hasOneWayBefore, after: $hasOneWayAfter")
+
+        /********************************************************/
+        val restrictions: RDD[(Long, osm.Relation)] =
+          rs.filter(_._2.meta.tags.getOrElse("type", "") == "restriction")
+
+        def newerRelation(e1: osm.Relation, e2: osm.Relation): osm.Relation =
+          if (e1.meta.version > e2.meta.version) e1 else e2
+
+        val restrictionsBeforeTimeStamp = restrictions.filter(_._2.meta.timestamp.isBefore(Instant.parse("2017-11-01T00:00:00.00Z")))
+        val latestRestrictionBeforeUpdate = restrictionsBeforeTimeStamp.reduceByKey(newerRelation).count()
+        val latestRestrictionAfterUpdate = restrictions.reduceByKey(newerRelation).count()
+
+        println(s"Turn restriction counts: before: $latestRestrictionBeforeUpdate, after: $latestRestrictionAfterUpdate")
+
+        /**********************************************************
+          * TODO feature maps
+          *
+        val layout: LayoutDefinition =
+          ZoomedLayoutScheme.layoutForZoom(15, WebMercator.worldExtent, 512)
+
+        val roadsToMap = latestRoadAfterUpdate.filter(_._2.meta.visible.equals(true))
+
+        val features = osm.features(ns, roadsToMap, rs).lines
+
+        features.foreach(f => println(f))
+          */
       }
     }
     ss.stop()

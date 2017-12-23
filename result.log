@@ -1,5 +1,7 @@
-Roads created: 4495
+Calculating road stats for Maryland
+Roads created: 4461
 Roads deleted: 0
-Roads modified: 11615
-Has surface counts: before: 30846, after: 37654
-Has oneway counts: before: 46613, after: 48082
+Roads modified: 11588
+Has surface counts: before: 30848, after: 37654
+Has oneway counts: before: 46617, after: 48082
+Turn restriction counts: before: 2009, after: 2212
