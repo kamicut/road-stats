@@ -41,3 +41,6 @@ dist/
 # macOS
 .DS_Store
 
+# Vector data 
+*.mbtiles
+*.geojson
